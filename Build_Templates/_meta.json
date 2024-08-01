@@ -1,0 +1,16 @@
+{
+	"$schema": "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json",
+	"_meta": {
+		"sources": [
+			{
+				"json": "",
+				"abbreviation": "",
+				"full": "",
+				"authors": [],
+				"version": "1.0"
+			}
+		],
+		"dateAdded": 0,
+		"dateLastModified": 0
+	}
+}
