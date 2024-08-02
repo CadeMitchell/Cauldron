@@ -7,7 +7,8 @@ def clear():
 
 class FileManagment:
     current_brew = None
-    runnig = True
+    running = True
+    
     def create_file():
         FileManagment.current_brew = FileManagment.load_file(new_file=True)
         Navigation.new_meta_setup()
@@ -17,9 +18,13 @@ class FileManagment:
         if new_file:
             with open("Build_Templates\\_meta.json", "r") as file:
                 brew = json.load(file)
-        else:
+        elif path:
             with open(path, "r") as file:
                 brew = json.load(file)
+        else:
+            files = [(file, Navigation.load_file("Brews\\"+file)) for file in os.listdir("Brews")] #Start here
+            Navigation.menu_generator()
+            brew = 7
         return brew
 
     def save_file(brew):
@@ -35,17 +40,20 @@ class Navigation:
             options (list[tuple[str, Callable]]): str is for the name of the option and callable is a function that will be returned if the item is selected.
 
         Returns:
-            Callable: Returns a callable function that was contained in the selected tuple by the user.
+            Callable: Returns the selected function.
         '''
-        clear()
-        for key, value in enumerate(options):
-            print(f"({key+1}) - {value[0]}")
-        user = input("Select: ")
-        
-        for key, value in enumerate(options):
-            if int(user)-1 == key:
-                return options[int(user)-1][1]
-        Navigation.menu_generator(options)
+        while True:
+            clear()
+            for index, (option, _) in enumerate(options):
+                print(f"({index + 1}) - {option}")
+            try:
+                choice = int(input("Select an option: "))
+                if 1 <= choice <= len(options):
+                    return options[choice - 1][1]
+                else:
+                    print("Invalid choice. Please try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
   
     def new_meta_setup():
         clear()
@@ -92,11 +100,11 @@ def Main():
         "vehicle": Navigation.edit_vehicle,
     }
     
-    while FileManagment.runnig:
-        brew_options = ["Edit "+str(item) for item in FileManagment.current_brew.keys()]
-        brew_options_editors = [brew_editor_lookup.get(item, None) for item in brew_options]
-        Navigation.menu_generator(zip(brew_options, brew_options_editors))
+    while FileManagment.running:
+        brew_options = [("Edit " + str(item), brew_editor_lookup[str(item)]) for item in FileManagment.current_brew.keys()]
+        Navigation.menu_generator(brew_options)
 
     
 if __name__ == "__main__":
-    Main()
+    clear()
+    #Main()
