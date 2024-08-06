@@ -77,8 +77,9 @@ class Editor:
         input(f"This is for refrence only, $Schema is for validating the structure of the file on upload.\n(Press ENTER to leave)\nSchema: {FileManagment.current_brew["$schema"]}")
     
     def edit_meta():
-        pass
-    
+        input("Currently this program only supports the meta for a single book at a time.\nThe meta contains data about the source material. If it is completley original you don't need to worry, its just refrenced as if it were a book.\n(Press ENTER to Continue)\n")
+        Navigation.menu_generator()
+        
     def edit_action():
         pass
     
