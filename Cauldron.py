@@ -1,6 +1,7 @@
 """
 Main
 """
+import os
 from src import utilities as util
 from src import file_managment as fm
 
@@ -98,9 +99,19 @@ class Editor:
     
     def edit_vehicle():
         pass
+
         
 def Main():
-    pass
+    brew = {}
+    user = util.menu_generator([("Load Homebrew", 1), ("Create New Homebrew file", 0)])
+    if user:
+        brew = fm.load_file()
+    else:
+        hb_id = input("Please enter the unique identifier you would like for your Homebrew file.\nThis must be 6 or more characters, noy symbols, unique to all homebrews.\nID: ")
+        fm.create_brew_file(hb_id)
+        brew = fm.load_file("Brews\\" + hb_id + ".json")
+        
+    input(brew)
 
 if __name__ == "__main__":
     util.clear()

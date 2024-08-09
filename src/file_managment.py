@@ -4,7 +4,7 @@ This module is for all things related to all things json file.
 import json
 import os
 import sys
-import utilities as util
+from . import utilities as util
 
 def load_file(path = "") -> dict:
     '''Loads a JSON file from either a given path or from the Brews subfolder.
@@ -15,12 +15,11 @@ def load_file(path = "") -> dict:
     Returns:
         dict: Imported JSON file.
     '''
-    file = None
     counter = 0
     while counter < 3:
         try:
             if not path:
-                path = util.menu_generator([(file, "Brew\\" + file) for file in os.listdir("Brews")])
+                path = util.menu_generator([(file, "Brews\\" + file) for file in os.listdir("Brews")])
             with open(path, "r") as file:
                 return json.load(file)
         except Exception as e:
