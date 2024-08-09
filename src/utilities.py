@@ -1,5 +1,5 @@
 """
-This module is for providing the menu generation and visual menus for the main program.
+This module is for providing general utilities.
 """
 import os
 
