@@ -20,6 +20,11 @@ def Main():
         fm.create_brew_file(hb_id)
         brew = fm.load_file("Brews\\" + hb_id + ".json")
         
+    while brew:
+        default_options = [("Add/Remove Categories", 1), ("Save Brew", 1), ("Exit", 1)]
+        
+        choice = util.menu_generator()
+        choice()
 
 if __name__ == "__main__":
     util.clear()
