@@ -9,6 +9,9 @@ class base_editor:
     def choose_options():
         pass
 
+    def edit_entries():
+        pass
 
 class schema(base_editor): 
-    pass
+    def edit_schema():
+        pass
