@@ -7,7 +7,7 @@ from src import editors as edit
         
 def Main():
     brew = {}
-    editor_lookup = {"$schema" : edit.schema.edit_schema, "_meta" : edit.schema.edit_schema, "action" : edit.schema.edit_schema, 
+    editor_lookup = {"$schema" : edit.schema, "_meta" : edit.schema.edit_schema, "action" : edit.schema.edit_schema, 
                      "background" : edit.schema.edit_schema, "baseitem" : edit.schema.edit_schema, "boon" : edit.schema.edit_schema, 
                      "class" : edit.schema.edit_schema, "classFluff" : edit.schema.edit_schema, "classFeature" : edit.schema.edit_schema, 
                      "condition" : edit.schema.edit_schema, "cult" : edit.schema.edit_schema, "deity" : edit.schema.edit_schema, 
@@ -31,8 +31,8 @@ def Main():
     default_options = [("Add/Remove Modules", 0), ("Save Brew", 1), ("Exit", 2)]
     while brew:
         modules = [(module, editor_lookup[module]) for module in brew.keys()]
-        
-        choice = util.menu_generator()
+        options = default_options.extend(modules)
+        choice = util.menu_generator(options)
         if choice == 0:
             pass
         elif choice == 1:
@@ -41,7 +41,10 @@ def Main():
         elif choice == 2:
             break
         else:
-            choice()
+            module_editor = choice(brew)
+            module_editor.menu()
+            export = module_editor.export()
+            brew[export[0]] = export[1]
 
 
 if __name__ == "__main__":
