@@ -31,8 +31,12 @@ class schema(base_editor):
     def edit_schema(self):
         print(f"Current $Schema: {self.module}")
         if input(f"Warning. Changing $Schema is advised against. Do not change under normal circumstances.\n(Y) to continue to edit.\n(N) to cancel\n").upper() == "Y":
-            self.module = input("Enter new $Schema URL:\n")
-            input("$schema has been changed.\nPress ENTER to continue.\n")
+            user = input("(Leave Blank to Cancel)\nEnter new $Schema URL:\n")
+            if user:
+                self.module = user
+                input("$schema has been changed.\nPress ENTER to continue.\n")
+            else:
+                input("$schema has not been changed.\nPress ENTER to continue.\n")
             
     def reset_to_default(self):
         self.module = "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json"
