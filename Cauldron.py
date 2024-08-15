@@ -1,220 +1,53 @@
-from typing import Callable
-import json
-import os
-
-def clear():
-    os.system("cls")
-
-class FileManagment:
-    current_brew = None
-    running = True
-    
-    def create_file():
-        brew = FileManagment.load_file(new_file=True)
-        brew = Navigation.new_meta_setup(brew)
-        FileManagment.save_file(brew)
-        return brew
-            
-    def load_file(path = None, new_file = False):
-        if new_file:
-            with open("Build_Templates\\_meta.json", "r") as file:
-                brew = json.load(file)
-        elif path:
-            with open(path, "r") as file:
-                brew = json.load(file)
-        else:
-            files = [(file, FileManagment.load_file("Brews\\"+file)) for file in os.listdir("Brews")] #Start here
-            selected = Navigation.menu_generator(files)
-            brew = selected
-        return brew
-
-    def save_file(brew):
-        with open("Brews\\"+brew["_meta"]["sources"][0]["json"]+".json", "w") as file:
-                json.dump(brew, file, sort_keys=True, indent=4)
-
-class Navigation: 
-    def menu_generator(options: list[tuple[str, Callable]]) -> Callable:
-        '''Generates a Menu from a list of tuples.
-
-        Args:
-            options (list[tuple[str, Callable]]): str is for the name of the option and callable is a function that will be returned if the item is selected.
-
-        Returns:
-            Callable: Returns the selected function.
-        '''
-        while True:
-            clear()
-            for index, (option, _) in enumerate(options):
-                print(f"({index + 1}) - {option}")
-            try:
-                choice = int(input("Select an option: "))
-                if 1 <= choice <= len(options):
-                    return options[choice - 1][1]
-                else:
-                    print("Invalid choice. Please try again.")
-            except ValueError:
-                print("Invalid input. Please enter a number.")
-  
-    def new_meta_setup(brew):
-        clear()
-        sources = brew["_meta"]["sources"][0]
-        input("The setup process for the basic file data is now taking place. This will be documentation related to your homebrew.\nIf you make a mistake or change your mind you will be able to edit this later.\nPress ENTER to continue.")
-        clear()
-        sources["json"] = input("Please enter a json identifier for your brew file. It must be completely unique to any other homebrew.\nThis is only used as an identifier and will not show up anywhere other than here. Just make it related and unique to the project.\n(Minimum of 6 characters, No Spaces, No Symbols, No Numbers)\nJSON: ")
-        clear()
-        sources["abbreviation"] = input("Please enter an abbreviation for your brew. (e.g. PHB for 'Player Hand Book')\nAbbreviation: ")
-        clear()
-        sources["full"] = input("Please enter the full title of the Brew.\nBrew Name: ")
-        clear()
-        sources["authors"] = input("Please enter the author names for contributers to the source material.\n(Format is as follows: Bob Bowen, Carl Coolguy)\nAuthors: ").split(", ")
-        clear()
-        sources["convertedBy"] = input("Please enter the names of who converted the source material into a 5eTools compatible json file. (This will most likely just be you since your using this program. Feel free to credit the creator of the program though.)\n(Format is as follows: Bob Bowen, Carl Coolguy)\nConverters: ").split(", ")
-        brew["_meta"]["sources"][0] = sources
-        return brew
-        
-class Editor:
-    def edit_schema():
-        input(f"This is for refrence only, $Schema is for validating the structure of the file on upload.\n(Press ENTER to leave)\nSchema: {FileManagment.current_brew["$schema"]}")
-    
-    def edit_meta():
-        input("Currently this program only supports the meta for a single book at a time.\nThe meta contains data about the source material. If it is completley original you don't need to worry, its just refrenced as if it were a book.\n(Press ENTER to Continue)\n")
-        Navigation.menu_generator()
-        
-    def edit_action():
-        pass
-    
-    def edit_background():
-        pass
-    
-    def edit_baseitem():
-        pass
-    
-    def edit_boon():
-        pass
-    
-    def edit_class():
-        pass
-
-    def edit_classFluff():
-        pass
-        
-    def edit_classfeature():
-        pass
-    
-    def edit_condition():
-        pass
-    
-    def edit_cult():
-        pass
-    
-    def edit_deity():
-        pass
-    
-    def edit_diesease():
-        pass
-    
-    def edit_feat():
-        pass
-    
-    def edit_hazard():
-        pass
-    
-    def edit_item():
-        pass
-    
-    def edit_itemType():
-        pass
-    
-    def edit_itemProperty():
-        pass
-    
-    def edit_language():
-        pass
-    
-    def edit_magicvariant():
-        pass
-    
-    def edit_monster():
-        pass
-    
-    def edit_object():
-        pass
-    
-    def edit_optionalfeature():
-        pass
-    
-    def edit_race():
-        pass
-    
-    def edit_reward():
-        pass
-    
-    def edit_spell():
-        pass
-    
-    def edit_subclass():
-        pass
-    
-    def edit_subclassFeature():
-        pass
-    
-    def edit_subrace():
-        pass
-    
-    def edit_table():
-        pass
-    
-    def edit_varientrule():
-        pass
-    
-    def edit_vehicle():
-        pass
+"""
+Main
+"""
+from src import utilities as util
+from src import file_managment as fm
+from src import editors as edit
         
 def Main():
-    initialize = Navigation.menu_generator([("Load Homebrew File", FileManagment.load_file), ("Create Homebrew File", FileManagment.create_file)])
-    FileManagment.current_brew = initialize()
-    brew_editor_lookup={
-        "$schema": Editor.edit_schema,
-        "_meta": Editor.edit_meta,
-        "action": Editor.edit_action,
-        "background": Editor.edit_background,
-        "baseitem": Editor.edit_baseitem,
-        "boon": Editor.edit_boon,
-        "class": Editor.edit_class,
-        "classFluff": Editor.edit_classFluff,
-        "classFeature": Editor.edit_classfeature,
-        "condition": Editor.edit_condition,
-        "cult": Editor.edit_cult,
-        "deity": Editor.edit_deity,
-        "disease": Editor.edit_diesease,
-        "feat": Editor.edit_feat,
-        "hazard": Editor.edit_hazard,
-        "item": Editor.edit_item, #This will have some sub categories as their are several keys that fall into this category
-        "itemType": Editor.edit_itemType,
-        "itemProperty": Editor.edit_itemProperty,
-        "language": Editor.edit_language,
-        "magicvariant": Editor.edit_magicvariant,
-        "monster": Editor.edit_monster,
-        "object": Editor.edit_object,
-        "optionalfeature": Editor.edit_optionalfeature, #This puts a dict under the _meta key
-        "race": Editor.edit_race,
-        "reward": Editor.edit_reward,
-        "spell": Editor.edit_spell,
-        "subclass": Editor.edit_subclass,
-        "subclassFeature": Editor.edit_subclassFeature,
-        "subrace": Editor.edit_subrace,
-        "table": Editor.edit_table,
-        "varientrule": Editor.edit_varientrule,
-        "vehicle": Editor.edit_vehicle,
+    brew = {}
+    editor_lookup = {"$schema" : edit.schema, "_meta" : edit.meta, "action" : edit.schema, 
+                     "background" : edit.schema, "baseitem" : edit.schema, "boon" : edit.schema, 
+                     "class" : edit.schema, "classFluff" : edit.schema, "classFeature" : edit.schema, 
+                     "condition" : edit.schema, "cult" : edit.schema, "deity" : edit.schema, 
+                     "disease" : edit.schema, "feat" : edit.schema, "hazard" : edit.schema, 
+                     "item" : edit.schema, "itemType": edit.schema, "itemProperty" : edit.schema, 
+                     "language" : edit.schema, "magicvariant" : edit.schema, "monster" : edit.schema, 
+                     "object" : edit.schema, "optionalfeature" : edit.schema, "race" : edit.schema, 
+                     "reward" : edit.schema, "spell" : edit.schema, "subclass" : edit.schema, 
+                     "subclassFeature" : edit.schema, "subrace" : edit.schema, "table" : edit.schema, 
+                     "varientrule" : edit.schema, "vehicle": edit.schema,
     }
     
-    while FileManagment.running:
-        brew_options = [("Edit " + str(item), brew_editor_lookup[str(item)]) for item in FileManagment.current_brew.keys()]
-        choice = Navigation.menu_generator(brew_options)
-        clear()
-        choice()
+    user = util.menu_generator([("Load Homebrew", 1), ("Create New Homebrew file", 0)])
+    if user:
+        brew = fm.load_file()
+    else:
+        hb_id = input("Please enter the unique identifier you would like for your Homebrew file.\nThis must be 6 or more characters, noy symbols, unique to all homebrews.\nID: ")
+        fm.create_brew_file(hb_id)
+        brew = fm.load_file("Brews\\" + hb_id + ".json")
+        
+   
+    while brew:
+        options = [("Add/Remove Modules", 0), ("Save Brew", 1), ("Exit", 2)]
+        modules = [(module, editor_lookup[module]) for module in brew.keys()]
+        options.extend(modules)
+        choice = util.menu_generator(options)
+        if choice == 0:
+            pass
+        elif choice == 1:
+            fm.save_file(brew)
+            input("Your Homebrew File has been saved!\n(Press ENTER to continue)")
+        elif choice == 2:
+            break
+        else:
+            module_editor = choice(brew)
+            module_editor.menu()
+            export = module_editor.export_module()
+            brew[export[0]] = export[1]
 
-    
+
 if __name__ == "__main__":
-    clear()
+    util.clear()
     Main()
