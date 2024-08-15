@@ -7,17 +7,17 @@ from src import editors as edit
         
 def Main():
     brew = {}
-    editor_lookup = {"$schema" : edit.schema, "_meta" : edit.schema.edit_schema, "action" : edit.schema.edit_schema, 
-                     "background" : edit.schema.edit_schema, "baseitem" : edit.schema.edit_schema, "boon" : edit.schema.edit_schema, 
-                     "class" : edit.schema.edit_schema, "classFluff" : edit.schema.edit_schema, "classFeature" : edit.schema.edit_schema, 
-                     "condition" : edit.schema.edit_schema, "cult" : edit.schema.edit_schema, "deity" : edit.schema.edit_schema, 
-                     "disease" : edit.schema.edit_schema, "feat" : edit.schema.edit_schema, "hazard" : edit.schema.edit_schema, 
-                     "item" : edit.schema.edit_schema, "itemType": edit.schema.edit_schema, "itemProperty" : edit.schema.edit_schema, 
-                     "language" : edit.schema.edit_schema, "magicvariant" : edit.schema.edit_schema, "monster" : edit.schema.edit_schema, 
-                     "object" : edit.schema.edit_schema, "optionalfeature" : edit.schema.edit_schema, "race" : edit.schema.edit_schema, 
-                     "reward" : edit.schema.edit_schema, "spell" : edit.schema.edit_schema, "subclass" : edit.schema.edit_schema, 
-                     "subclassFeature" : edit.schema.edit_schema, "subrace" : edit.schema.edit_schema, "table" : edit.schema.edit_schema, 
-                     "varientrule" : edit.schema.edit_schema, "vehicle": edit.schema.edit_schema,
+    editor_lookup = {"$schema" : edit.schema, "_meta" : edit.meta, "action" : edit.schema, 
+                     "background" : edit.schema, "baseitem" : edit.schema, "boon" : edit.schema, 
+                     "class" : edit.schema, "classFluff" : edit.schema, "classFeature" : edit.schema, 
+                     "condition" : edit.schema, "cult" : edit.schema, "deity" : edit.schema, 
+                     "disease" : edit.schema, "feat" : edit.schema, "hazard" : edit.schema, 
+                     "item" : edit.schema, "itemType": edit.schema, "itemProperty" : edit.schema, 
+                     "language" : edit.schema, "magicvariant" : edit.schema, "monster" : edit.schema, 
+                     "object" : edit.schema, "optionalfeature" : edit.schema, "race" : edit.schema, 
+                     "reward" : edit.schema, "spell" : edit.schema, "subclass" : edit.schema, 
+                     "subclassFeature" : edit.schema, "subrace" : edit.schema, "table" : edit.schema, 
+                     "varientrule" : edit.schema, "vehicle": edit.schema,
     }
     
     user = util.menu_generator([("Load Homebrew", 1), ("Create New Homebrew file", 0)])
@@ -28,10 +28,11 @@ def Main():
         fm.create_brew_file(hb_id)
         brew = fm.load_file("Brews\\" + hb_id + ".json")
         
-    default_options = [("Add/Remove Modules", 0), ("Save Brew", 1), ("Exit", 2)]
+   
     while brew:
+        options = [("Add/Remove Modules", 0), ("Save Brew", 1), ("Exit", 2)]
         modules = [(module, editor_lookup[module]) for module in brew.keys()]
-        options = default_options.extend(modules)
+        options.extend(modules)
         choice = util.menu_generator(options)
         if choice == 0:
             pass
@@ -43,7 +44,7 @@ def Main():
         else:
             module_editor = choice(brew)
             module_editor.menu()
-            export = module_editor.export()
+            export = module_editor.export_module()
             brew[export[0]] = export[1]
 
 

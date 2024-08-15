@@ -8,17 +8,20 @@ def clear():
     '''
     os.system("cls")
 
-def menu_generator(options: list[tuple[str, object]]) -> object:
+def menu_generator(options: list[tuple[str, object]], prompt = "") -> object:
         '''Generates a Menu from a list of tuples.
 
         Args:
             options (list[tuple[str, Callable]]): str is for the name of the option and object will be returned if the item is selected.
+            prompt (str): Provides a prompt for the user in addition to the options.
 
         Returns:
             object: Returns the selected object.
         '''
         while True:
             clear()
+            if prompt:
+                print(prompt)
             for index, (option, _) in enumerate(options):
                 print(f"({index + 1}) - {option}")
             try:
