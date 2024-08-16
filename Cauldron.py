@@ -7,7 +7,7 @@ from src import editors as edit
         
 def Main():
     brew = {}
-    editor_lookup = {"$schema" : edit.schema, "_meta" : edit.meta, "action" : edit.schema, 
+    editor_lookup = {"$schema" : edit.schema, "_meta" : edit.meta, "action" : edit.action, 
                      "background" : edit.schema, "baseitem" : edit.schema, "boon" : edit.schema, 
                      "class" : edit.schema, "classFluff" : edit.schema, "classFeature" : edit.schema, 
                      "condition" : edit.schema, "cult" : edit.schema, "deity" : edit.schema, 

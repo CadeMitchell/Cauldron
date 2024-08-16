@@ -6,8 +6,12 @@ from .utilities import menu_generator as mg
 class base_editor:
     def __init__(self, brew: dict) -> None:
         self.options = [("Exit", 0)]
+        self.options_action = [("Exit", 0)]
+        self.options_entries = [("Exit", 0)]
+        self.options_time = [("Exit", 0)]
         self.name = None
         self.module = brew
+        self.brew = brew
     
     def export_module(self):
         return (self.name, self.module)
@@ -76,7 +80,7 @@ class meta(base_editor):
             input("Brew Abbreviation has not been changed.\nPress ENTER to continue.\n")
             
     def edit_json(self):
-        user = input("(Leave Blank to Cancel)\nThis must be 6 or more characters, no symbols, unique to all homebrews.\nEnter the new Hombrew ID:\n")
+        user = input("(Leave Blank to Cancel)\nThis must be 6 or more characters, no symbols, unique to all homebrews.\nChanging this will require you to change this everywhere it is refenced manually.\nEnter the new Hombrew ID:\n")
         if user:
             self.module["json"] = user
             input("Brew ID has been changed.\nPress ENTER to continue.\n")
@@ -112,3 +116,75 @@ class meta(base_editor):
         module = self.brew["_meta"]["sources"][0] == self.module
         
         return (self.name, module)
+    
+class action(base_editor):
+    def __init__(self, brew: dict) -> None:
+        super().__init__(brew)
+        self.name = "action"
+        self.module = brew["action"]
+        self.options.extend([("Add Action", self.action_add,) ("Edit Action", self.action_edit)])
+        self.options_action.extend([("Edit Action Name", self.edit_name), ("Edit Entries", self.edit_entries), ("Edit Time", self.edit_time)])
+        self.options_entries.extend([])
+        self.options_time.extend([])
+        
+    def menu(self):
+        while True:
+            choice = mg(self.options)
+            if choice == 0:
+                break
+            else:
+                choice()
+
+    def action_add(self):
+        user = input("(Leave Blank to Cancel)\nEnter the name of the new action\n")
+        if user:
+            self.module.append({"source": self.brew["_meta"][0]["source"], "name": user, "page": 0, "entries": [], "time": []})
+            input(f"Action {user} has been created.\nPress ENTER to continue.\n")
+        else:
+            input("Action has not been created.\nPress ENTER to continue.\n")
+                 
+    def action_edit(self):
+        while True:
+            options = [("Exit", "0")]
+            options.extend([(action[1]["name"], action[0]) for action in enumerate(self.module)])
+            selected_action = mg(options)
+            if selected_action == "0":
+                break
+            else:
+                action = self.module[selected_action]
+                while True:
+                    selected_edit = mg(self.options_action)
+                    if selected_action == 0:
+                        break
+                    else:
+                        self.module[selected_action] = selected_edit(action)
+             
+    def edit_name(self, action):
+        user = input("(Leave Blank to Cancel)\nEnter the Action's new name:\n")
+        if user:
+            action["name"] = user
+            input("Action name has been changed.\nPress ENTER to continue.\n")
+        else:
+            input("Action name has not been changed.\nPress ENTER to continue.\n")
+        return action
+    
+    def edit_entries(self, action):
+        while True:
+            options = [("Exit", "0")]
+            options.extend([(action[1]["name"], action[0]) for action in enumerate(self.module)])
+            selected_action = mg(options)
+            if selected_action == "0":
+                break
+            else:
+                action = self.module[selected_action]
+                while True:
+                    selected_edit = mg(self.options_action)
+                    if selected_action == 0:
+                        break
+                    else:
+                        self.module[selected_action] = selected_edit(action)
+        return action
+    
+    def edit_time(self, action):
+        
+        return action
