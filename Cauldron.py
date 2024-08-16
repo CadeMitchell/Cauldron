@@ -24,7 +24,7 @@ def Main():
     if user:
         brew = fm.load_file()
     else:
-        hb_id = input("Please enter the unique identifier you would like for your Homebrew file.\nThis must be 6 or more characters, noy symbols, unique to all homebrews.\nID: ")
+        hb_id = input("Please enter the unique identifier you would like for your Homebrew file.\nThis must be 6 or more characters, no symbols, unique to all homebrews.\nID: ")
         fm.create_brew_file(hb_id)
         brew = fm.load_file("Brews\\" + hb_id + ".json")
         

@@ -9,7 +9,9 @@
                 "authors": [],
                 "full": "",
                 "json": "HBTest2",
-                "version": "1.0"
+                "version": "1.0",
+                "color": "FFFFFF",
+                "convertedBy": []
             }
         ]
     }
