@@ -3,9 +3,19 @@ This module if for housing the editor class and its subclasses for each editor.
 """
 from .utilities import menu_generator as mg
 from typing import Callable
+
 class base_editor:
     def __init__(self, brew: dict) -> None:
         self.brew = brew
+        self.module = brew
+    
+    def menu(self):
+        while True:
+            choice = mg([("Exit", "Exit")].extend([]))
+
+    
+    def export_module(self):
+        return (self.name, self.module)
     
     def _edit_string(original_value:str) -> str:
         print(f"Current String Value: {original_value}")
@@ -26,6 +36,5 @@ class base_editor:
         return group
         
     
-    def export_module(self):
-        return (self.name, self.module)
+
     
