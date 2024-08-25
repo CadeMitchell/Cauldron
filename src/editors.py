@@ -2,6 +2,7 @@
 This module if for housing the editor class and its subclasses for each editor.
 """
 from .utilities import menu_generator as mg
+from .utilities import clear as cl
 from typing import Callable
 
 class base_editor:
@@ -12,12 +13,14 @@ class base_editor:
     def menu(self):
         while True:
             choice = mg([("Exit", "Exit")].extend([]))
-
+            if choice == "Exit":
+                break
     
     def export_module(self):
         return (self.name, self.module)
     
-    def _edit_string(original_value:str) -> str:
+    def _edit_string(original_value: str) -> str:
+        cl()
         print(f"Current String Value: {original_value}")
         print(f"(Leave input blank to CANCEL the edit.)")
         user = input("Enter the new value:\n")
@@ -27,13 +30,24 @@ class base_editor:
         input("Value has not been changed.\nPress ENTER to continue.\n")
         return original_value
     
-    def _edit_from_list(group: list, editor: Callable):
+    def _edit_int(original_int: int):
         while True:
-            choice = mg([("Exit", "Exit")].extend([(item[1], item[0]) for item in enumerate(group)]))
-            group[choice] = editor(group[choice])
-            if choice == "Exit":
-                break
-        return group
+            cl()
+            try:
+                print(f"Current Number Value: {original_int}")
+                print(f"(Leave input blank to CANCEL the edit.)")
+                user = input("Enter the new value:\n")
+                if user:
+                    user = int(user)
+                    input("Value has been changed.\nPress ENTER to continue.\n")
+                    return user
+                else:
+                    break
+            except:
+                    input("No number detected, try again\nPress ENTER to continue.\n")
+                    continue
+        input("Value has not been changed.\nPress ENTER to continue.\n")
+        return original_int
         
     
 
