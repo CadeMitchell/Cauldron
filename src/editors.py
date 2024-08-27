@@ -44,11 +44,26 @@ class base_editor:
                 else:
                     break
             except:
-                    input("No number detected, try again\nPress ENTER to continue.\n")
+                    input("No number detected, try again.\nPress ENTER to continue.\n")
                     continue
         input("Value has not been changed.\nPress ENTER to continue.\n")
         return original_int
         
-    
+    def _edit_set_choice(original_choice: object, options: list[(str, str)], prompt = ""):
+        choice = mg([("Cancel Change", "Cancel")].extend(options), prompt)
+        if choice == "Cancel":
+            return original_choice
+        else:
+            return choice
 
-    
+
+class meta_editor(base_editor):
+    def __init__(self, brew: dict) -> None:
+        super().__init__(brew)
+        self.module = brew["_meta"]
+        self.primary_meta = self.module[0]
+
+    def menu(self):
+        while True:
+            meta = [(meta) for meta in self.module]
+            current_meta = mg([("Exit Meta Editor", "Exit")].extend())
