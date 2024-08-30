@@ -10,12 +10,6 @@ class base_editor:
         self.brew = brew
         self.module = brew
     
-    def menu(self):
-        while True:
-            choice = mg([("Exit", "Exit")].extend([]))
-            if choice == "Exit":
-                break
-    
     def export_module(self):
         return (self.name, self.module)
     
@@ -56,7 +50,23 @@ class base_editor:
         else:
             return choice
 
-
+class schema_editor(base_editor):
+    def __init__(self, brew: dict) -> None:
+        super().__init__(brew)
+        self.module = brew["$schema"]
+        
+    def menu(self):
+        while True:
+            choice = mg([("Exit Schema Editor", "Exit"), ("Edit Shema", "Schema"), ("Reset Schema", "Reset")], 
+                        f"Highly Reccomend not to change Schema, Do so at your own risk.\nCurrent Schema: {self.module}"
+                        )
+            if choice == "Exit":
+                break
+            elif choice == "Scehma":
+                self.module = schema_editor._edit_string(self.module)
+            elif choice == "Reset":
+                self.module = "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json"
+                
 class meta_editor(base_editor):
     def __init__(self, brew: dict) -> None:
         super().__init__(brew)
@@ -65,5 +75,16 @@ class meta_editor(base_editor):
 
     def menu(self):
         while True:
-            meta = [(meta) for meta in self.module]
-            current_meta = mg([("Exit Meta Editor", "Exit")].extend())
+            choice = mg([("Exit Meta Editor", "Exit"), ("Edit a Meta Source", "Edit Meta"), ("Add a Meta Source", "Add Meta"), ("Delete a Meta Source", "Delete Meta")],
+                              """A meta is the part of the file that identifies your content. When adding things to your homebrew it will likley refrence things here
+                              You may have multiple metas per document (I don't recommend this), but for this program you will have a primary meta for file sorting purposes."""
+                              )
+            
+            if choice == "Exit":
+                break
+            elif choice == "Edit Meta":
+                pass
+            elif choice == "Add Meta":
+                pass
+            elif choice == "Delete Meta":
+                pass
