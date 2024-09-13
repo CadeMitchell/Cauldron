@@ -2,189 +2,123 @@
 This module if for housing the editor class and its subclasses for each editor.
 """
 from .utilities import menu_generator as mg
+from .utilities import clear as cl
+from .file_managment import load_file as lf
 
 class base_editor:
     def __init__(self, brew: dict) -> None:
-        self.options = [("Exit", 0)]
-        self.options_action = [("Exit", 0)]
-        self.options_entries = [("Exit", 0)]
-        self.options_time = [("Exit", 0)]
-        self.name = None
-        self.module = brew
         self.brew = brew
+        self.module = brew
     
     def export_module(self):
         return (self.name, self.module)
     
+    def _edit_string(original_value: str) -> str:
+        cl()
+        print(f"Current String Value: {original_value}")
+        print(f"(Leave input blank to CANCEL the edit.)")
+        user = input("Enter the new value:\n")
+        if user:
+            input("Value has been changed.\nPress ENTER to continue.\n")
+            return user
+        input("Value has not been changed.\nPress ENTER to continue.\n")
+        return original_value
+    
+    def _edit_int(original_int: int):
+        while True:
+            cl()
+            try:
+                print(f"Current Number Value: {original_int}")
+                print(f"(Leave input blank to CANCEL the edit.)")
+                user = input("Enter the new value:\n")
+                if user:
+                    user = int(user)
+                    input("Value has been changed.\nPress ENTER to continue.\n")
+                    return user
+                else:
+                    break
+            except:
+                    input("No number detected, try again.\nPress ENTER to continue.\n")
+                    continue
+        input("Value has not been changed.\nPress ENTER to continue.\n")
+        return original_int
+        
+    def _edit_set_choice(original_choice: object, options: list[(str, str)], prompt = ""):
+        choice = mg([("Cancel Change", "Cancel")].extend(options), prompt)
+        if choice == "Cancel":
+            return original_choice
+        else:
+            return choice
 
-class schema(base_editor):
+class schema_editor(base_editor):
     def __init__(self, brew: dict) -> None:
         super().__init__(brew)
-        self.name = "$schema"
         self.module = brew["$schema"]
-        self.options.extend([("Edit Schema", self.edit_schema), ("Reset Schema to Default", self.reset_to_default)])
         
     def menu(self):
         while True:
-            choice = mg(self.options)
-            if choice == 0:
+            choice = mg([("Exit Schema Editor", "Exit"), ("Edit Shema", "Schema"), ("Reset Schema", "Reset")], 
+                        f"Highly Reccomend not to change Schema, Do so at your own risk.\nCurrent Schema: {self.module}"
+                        )
+            if choice == "Exit":
                 break
-            else:
-                choice()
-
-    def edit_schema(self):
-        print(f"Current $Schema: {self.module}")
-        if input(f"Warning. Changing $Schema is advised against. Do not change under normal circumstances.\n(Y) to continue to edit.\n(N) to cancel\n").upper() == "Y":
-            user = input("(Leave Blank to Cancel)\nEnter new $Schema URL:\n")
-            if user:
-                self.module = user
-                input("$schema has been changed.\nPress ENTER to continue.\n")
-            else:
-                input("$schema has not been changed.\nPress ENTER to continue.\n")
-            
-    def reset_to_default(self):
-        self.module = "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json"
-        input("$schema has been reset to default.\nPress ENTER to continue.\n")
-
-class meta(base_editor):
+            elif choice == "Scehma":
+                self.module = schema_editor._edit_string(self.module)
+            elif choice == "Reset":
+                self.module = "https://raw.githubusercontent.com/TheGiddyLimit/5etools-utils/master/schema/brew-fast/homebrew.json"
+                
+class meta_editor(base_editor):
     def __init__(self, brew: dict) -> None:
         super().__init__(brew)
-        self.name = "_meta"
-        self.module = brew["_meta"]["sources"][0]
-        self.options.extend([("Edit Full Brew Name", self.edit_full), ("Edit Brew Abbreviation", self.edit_abbreviation),
-                             ("Edit Brew ID", self.edit_json), ("Edit Version", self.edit_version), ("Edit Brew Color", self.edit_color)
-                             ("Edit Authors", self.edit_authors)])
-        
-    def menu(self):
-        while True:
-            choice = mg(self.options)
-            if choice == 0:
-                break
-            else:
-                choice()
-    
-    def edit_full(self):
-        user = input("(Leave Blank to Cancel)\nEnter the new full Homebrew Name/Title:\n")
-        if user:
-            self.module["full"] = user
-            input("Brew name has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Brew name has not been changed.\nPress ENTER to continue.\n")
-            
-    def edit_abbreviation(self):
-        user = input("(Leave Blank to Cancel)\nEnter the new Hombrew Abbreviation:\n")
-        if user:
-            self.module["abbreviation"] = user
-            input("Brew Abbreviation has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Brew Abbreviation has not been changed.\nPress ENTER to continue.\n")
-            
-    def edit_json(self):
-        user = input("(Leave Blank to Cancel)\nThis must be 6 or more characters, no symbols, unique to all homebrews.\nChanging this will require you to change this everywhere it is refenced manually.\nEnter the new Hombrew ID:\n")
-        if user:
-            self.module["json"] = user
-            input("Brew ID has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Brew ID has not been changed.\nPress ENTER to continue.\n")
-            
-    def edit_version(self):
-        user = input("(Leave Blank to Cancel)\nEnter the new version number:\n")
-        if user:
-            self.module["version"] = user
-            input("Brew version number has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Brew version number has not been changed.\nPress ENTER to continue.\n")
-            
-    def edit_color(self):
-        user = input("(Leave Blank to Cancel)\nEnter the new brew color scheme in 5etools:\n")
-        if user:
-            self.module["color"] = user
-            input("Brew color scheme has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Brew color scheme has not been changed.\nPress ENTER to continue.\n")
-            
-    def edit_authors(self):
-        user = input("(Leave Blank to Cancel)\nEnter the authors seperated by commas (e.g Bob Glass, Robert Valium, Test Dummy):\n")
-        if user:
-            self.module["authors"] = user.split(", ")
-            self.module["convertedBy"] = user.split(", ")
-            input("Brew color scheme has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Brew color scheme has not been changed.\nPress ENTER to continue.\n")
-            
-    def export_module(self):
-        module = self.brew["_meta"]["sources"][0] == self.module
-        
-        return (self.name, module)
-    
-class action(base_editor):
-    def __init__(self, brew: dict) -> None:
-        super().__init__(brew)
-        self.name = "action"
-        self.module = brew["action"]
-        self.options.extend([("Add Action", self.action_add,) ("Edit Action", self.action_edit)])
-        self.options_action.extend([("Edit Action Name", self.edit_name), ("Edit Entries", self.edit_entries), ("Edit Time", self.edit_time)])
-        self.options_entries.extend([])
-        self.options_time.extend([])
-        
-    def menu(self):
-        while True:
-            choice = mg(self.options)
-            if choice == 0:
-                break
-            else:
-                choice()
+        self.module = brew["_meta"]
 
-    def action_add(self):
-        user = input("(Leave Blank to Cancel)\nEnter the name of the new action\n")
-        if user:
-            self.module.append({"source": self.brew["_meta"][0]["source"], "name": user, "page": 0, "entries": [], "time": []})
-            input(f"Action {user} has been created.\nPress ENTER to continue.\n")
-        else:
-            input("Action has not been created.\nPress ENTER to continue.\n")
-                 
-    def action_edit(self):
+    def menu(self):
         while True:
-            options = [("Exit", "0")]
-            options.extend([(action[1]["name"], action[0]) for action in enumerate(self.module)])
-            selected_action = mg(options)
-            if selected_action == "0":
+            choice = mg([("Exit Meta Editor", "Exit"), ("Edit a Meta Source", "Edit Meta"), ("Add a Meta Source", "Add Source"), ("Delete a Meta Source", "Delete Source")],
+                              """A meta is the part of the file that identifies your content. When adding things to your homebrew it will likley refrence things here
+                              You may have multiple metas sources per document (I don't recommend this), but for this program you will need atleast 1 source."""
+                        )
+            
+            if choice == "Exit":
                 break
-            else:
-                action = self.module[selected_action]
-                while True:
-                    selected_edit = mg(self.options_action)
-                    if selected_action == 0:
-                        break
-                    else:
-                        self.module[selected_action] = selected_edit(action)
-             
-    def edit_name(self, action):
-        user = input("(Leave Blank to Cancel)\nEnter the Action's new name:\n")
+            elif choice == "Edit Meta":
+                pass
+            elif choice == "Add Source":
+                self._add_source()
+            elif choice == "Delete Source":
+                if self.module["sources"].len() > 1:
+                    self._delete_source()
+                else:
+                    input("You only have 1 source. Please add another before attempting to remove the final one.\n(Press ENTER to continue.)")
+            
+    def _add_source(self):
+        new_source = lf("Build_Templates\\_meta.json")["_meta"]["sources"][0]
+        user = input("Please enter the unique identifier you would like for your Homebrew file.\nThis must be 6 or more characters, no symbols, unique to all homebrews.\n(Leave INPUT blank to cancel)\nID: ")
         if user:
-            action["name"] = user
-            input("Action name has been changed.\nPress ENTER to continue.\n")
-        else:
-            input("Action name has not been changed.\nPress ENTER to continue.\n")
-        return action
-    
-    def edit_entries(self, action):
-        while True:
-            options = [("Exit", "0")]
-            options.extend([(action[1]["name"], action[0]) for action in enumerate(self.module)])
-            selected_action = mg(options)
-            if selected_action == "0":
-                break
-            else:
-                action = self.module[selected_action]
-                while True:
-                    selected_edit = mg(self.options_action)
-                    if selected_action == 0:
-                        break
-                    else:
-                        self.module[selected_action] = selected_edit(action)
-        return action
-    
-    def edit_time(self, action):
+            new_source["json"] = user
+            self.module["sources"].append(new_source)
+            input(f"Source {user} added.\n(Press ENTER to continue)\n")
+        input("New Source cancelled.\n(Press ENTER to continue)\n")
         
-        return action
+    def _delete_source(self):
+        while True:
+            sources = [(source["json"], index) for index, source in enumerate(self.module["sources"])]
+            choice = mg([("Exit", "Exit")].extend(sources), "Select which source you would like to remove.")
+            if choice == "Exit":
+                input("Source delete cancelled.\n(Press ENTER to continue)")
+                break
+            else:
+                self.module["sources"].pop(choice)
+                input("Source deleted.\n(Press ENTER to continue)")
+            
+    def _choose_source_menu(self):
+        while True:
+            sources = [(source["json"], index) for index, source in enumerate(self.module["sources"])]
+            choice = mg([("Exit", "Exit")].extend(sources), "Select which source you would like to edit.")
+            if choice == "Exit":
+                break
+            else:
+                pass
+            
+    def _edit_source_menu(self):
+        pass

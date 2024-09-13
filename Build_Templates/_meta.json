@@ -3,11 +3,13 @@
 	"_meta": {
 		"sources": [
 			{
-				"json": "",
-				"abbreviation": "",
-				"full": "",
-				"authors": [],
-				"version": "1.0"
+                "abbreviation": "",
+                "authors": [],
+                "full": "",
+                "json": "HBTest2",
+                "version": "1.0",
+                "color": "FFFFFF",
+                "convertedBy": []
 			}
 		],
 		"dateAdded": 0,
